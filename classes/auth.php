@@ -90,7 +90,7 @@ class Auth extends DBConnection {
       if ($result->num_rows > 0) {
           $user = $result->fetch_assoc();
           if (password_verify($password, $user['password'])) {
-            $token = bin2hex(random_bytes(16));
+            $token = bin2hex(random_bytes(32));
 
             $expiresAt = date('Y-m-d H:i:s', strtotime('+8 hours'));
             $stmt = $this->getConnection()->prepare("INSERT INTO tokens (user_id, token, expires_at) VALUES (?, ?, ?)");
