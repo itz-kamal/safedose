@@ -4,7 +4,7 @@ class DBConnection {
     private $host = 'localhost';
     private $dbName = 'safedose';
     private $username = 'root';
-    private $password = '';
+    private $password = 'root';
 
     private $conn;
 
