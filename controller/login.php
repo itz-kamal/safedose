@@ -7,13 +7,10 @@ require_once '../classes/auth.php';
 $auth = new Auth();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $phoneNumber = trim($_POST['phoneNumber'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    $result = $auth->registerAdmin($name, $email, $phoneNumber, $password);
+    $result = $auth->login($email, $password);
 
     echo json_encode($result);
 }
-?>
