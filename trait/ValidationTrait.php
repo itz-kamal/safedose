@@ -6,10 +6,10 @@ trait ValidationTrait {
     }
 
     public function validatePhoneNumber($phoneNumber) {
-        return preg_match('/^09\d{9}$/', $phoneNumber);
+        return preg_match('/^0\d{10}$/', $phoneNumber);
     }
 
     public function validatePassword($password) {
-        return strlen($password) >= 8;
+        return strlen($password) >= 6;
     }
 }
