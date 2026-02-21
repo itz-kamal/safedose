@@ -66,8 +66,14 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => response.json())
       .then((data) => {
+        if (data.success) {
+          window.location.href = "/safedose/auth/login.php";
+        }
         console.log(data);
       })
       .catch((err) => console.error(err));
   });
 });
+
+
+
