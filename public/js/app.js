@@ -55,22 +55,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     let formData = new FormData();
-    formData.append("name", fullName);
-    formData.append("email", email);
-    formData.append("phoneNumber", phoneNumber);
-    formData.append("password", password);
+    formData.append("name", fullName.value);
+    formData.append("email", email.value);
+    formData.append("phoneNumber", phoneNumber.value);
+    formData.append("password", password.value);
 
-    fetch("./controller/register.php", {
+    fetch("/safedose/controller/register.php", {
       method: "POST",
-      body: JSON.stringify(formData),
+      body: formData,
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.success) {
-          console.log(data);
-        } else {
-          console.log("Error");
-        }
-      });
+        console.log(data);
+      })
+      .catch((err) => console.error(err));
   });
 });

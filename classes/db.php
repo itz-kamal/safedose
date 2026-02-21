@@ -4,7 +4,7 @@ class DBConnection {
     private $host = 'localhost';
     private $dbName = 'safedose';
     private $username = 'root';
-    private $password = '';
+    private $password = 'root';
 
     private $conn;
 
@@ -12,7 +12,7 @@ class DBConnection {
         $this->conn = mysqli_connect($this->host, $this->username, $this->password, $this->dbName);
 
         if (!$this->conn) {
-            die("Connection failed: " . mysqli_connect_error());
+            throw new Exception("Database connection failed: " . mysqli_connect_error());
         }
     }
 
@@ -20,3 +20,4 @@ class DBConnection {
         return $this->conn;
     }
 }
+?>
