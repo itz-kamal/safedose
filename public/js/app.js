@@ -34,9 +34,9 @@ document.addEventListener("DOMContentLoaded", function () {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
-    var isNameValid = validateRequired(firstName, "nameError");
+    var isNameValid = validateText(fullName, "nameError");
     var isEmailValid = validateEmail(email, "emailError");
-    var isPhoneNumberValid = validatePhone(phone, "phoneError");
+    var isPhoneNumberValid = validatePhoneNumber(phoneNumber, "phoneError");
     var isPasswordValid = validatePassword(password, "passwordError");
     var isMatch = validatePasswordMatch(
       password,
@@ -53,5 +53,24 @@ document.addEventListener("DOMContentLoaded", function () {
     ) {
       return;
     }
+
+    let formData = new FormData();
+    formData.append("name", fullName);
+    formData.append("email", email);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("password", password);
+
+    fetch("./controller/register.php", {
+      method: "POST",
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          console.log(data);
+        } else {
+          console.log("Error");
+        }
+      });
   });
 });
