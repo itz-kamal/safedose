@@ -17,6 +17,9 @@
           <div class="card shadow-sm border-0 p-4">
             <div class="card-body">
               <div class="text-center mb-4">
+                <div>
+                  <img src="../images/logo.svg" alt="SafeDose Logo" width="150" />
+                </div>
                 <h2 class="fw-bold">Create Admin</h2>
                 <p class="text-muted">Initialize your pharmacy management system by creating theprimary administrator account.</p>
               </div>
