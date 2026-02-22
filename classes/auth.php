@@ -10,9 +10,14 @@ class Auth extends DBConnection {
       return preg_match('/^0\d{10}$/', $phoneNumber);
   }
 
-  private function validatePassword($password) {
-      return strlen($password) >= 6;
-  }
+private function validatePassword($password) {
+    if (strlen($password) < 8) return false;
+    if (!preg_match('/[A-Z]/', $password)) return false;
+    if (!preg_match('/[0-9]/', $password)) return false;
+    if (!preg_match('/[!@#$%^&*()\-_=+\[\]{};:\'",.<>?\/\\\\|]/', $password)) return false;
+    return true;
+}
+
 
   private function emailExists($email) {
       $stmt = $this->getConnection()->prepare("SELECT id FROM users WHERE email = ?");

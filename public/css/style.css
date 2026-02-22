@@ -1,0 +1,14 @@
+:root {
+  --primary-color: #0081cc;
+  --primary-hover: #006aaa;
+}
+
+.btn-primary-custom {
+  background-color: var(--primary-color);
+  border: none;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary-custom:hover {
+  background-color: var(--primary-hover);
+}

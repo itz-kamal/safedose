@@ -1,7 +1,7 @@
-function validateText(input, errorId) {
+function validateName(input, errorId) {
   let value = input.value.trim();
   if (value.length === 0) {
-    resetValidation(input, errorId);
+    setError(input, errorId, "Full name is required");
     return false;
   }
   setError(input, errorId, "");
@@ -11,7 +11,7 @@ function validateText(input, errorId) {
 function validateEmail(input, errorId) {
   let value = input.value.trim();
   if (value.length === 0) {
-    resetValidation(input, errorId);
+    setError(input, errorId, "Email is required");
     return false;
   }
   let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -26,10 +26,10 @@ function validateEmail(input, errorId) {
 function validatePhoneNumber(input, errorId) {
   let value = input.value.trim();
   if (value.length === 0) {
-    resetValidation(input, errorId);
+    setError(input, errorId, "Phone number is required");
     return false;
   }
-  let phonePattern = /^[+]?[\d\s\-()]{7,15}$/;
+  let phonePattern = /^0[\d\s\-]{9,12}$/;
   if (!phonePattern.test(value)) {
     setError(input, errorId, "Enter a valid phone number");
     return false;
@@ -41,7 +41,7 @@ function validatePhoneNumber(input, errorId) {
 function validatePassword(input, errorId) {
   let value = input.value;
   if (value.length === 0) {
-    resetValidation(input, errorId);
+    setError(input, errorId, "Password is required");
     return false;
   }
   if (value.length < 8) {
@@ -67,7 +67,7 @@ function validatePassword(input, errorId) {
 function validatePasswordMatch(passwordInput, confirmPasswordInput, errorId) {
   let value = confirmPasswordInput.value;
   if (value.length === 0) {
-    resetValidation(confirmPasswordInput, errorId);
+    setError(confirmPasswordInput, errorId, "Please confirm your password");
     return false;
   }
   if (value !== passwordInput.value) {
@@ -89,9 +89,4 @@ function setError(input, errorId, message) {
     input.classList.add("is-valid");
     errorDiv.textContent = "";
   }
-}
-
-function resetValidation(input, errorId) {
-  input.classList.remove("is-valid", "is-invalid");
-  document.getElementById(errorId).textContent = "";
 }

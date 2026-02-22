@@ -8,15 +8,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SafeDose - Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"crossorigin="anonymous"/>
+    <link rel="stylesheet" href="../public/css/style.css" />
 </head>
 <body>
- <body>
   <div class="container">
     <div class="row min-vh-100 align-items-center justify-content-center">
       <div class="col-lg-6 col-md-8">
         <div class="card shadow-sm border-1 p-4">
           <div class="card-body">
             <div class="text-center mb-4">
+              <div>
+                <img src="../images/logo.svg" alt="SafeDose Logo" width="150" />
+              </div>
               <h2 class="fw-bold">Login</h2>
             </div>
             
@@ -33,7 +36,7 @@
                 <div class="invalid-feedback" id="passwordError"></div>
               </div>
 
-              <button type="submit" class="btn w-100 py-2 fw-semibold text-white" style="background-color: #3a8fb7">
+              <button type="submit" class="btn btn-primary-custom w-100 py-2 fw-semibold text-white">
                 Login
               </button>
             </form>
