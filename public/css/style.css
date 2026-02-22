@@ -12,3 +12,8 @@
 .btn-primary-custom:hover {
   background-color: var(--primary-hover);
 }
+
+.btn-primary-custom:disabled {
+  background-color: var(--primary-color);
+  opacity: 0.65;
+}

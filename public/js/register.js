@@ -1,10 +1,23 @@
 const form = document.getElementById("createAdminForm");
 
+//We first check if the admin exist
+fetch("/safedose/controller/adminExists.php")
+  .then((r) => r.json())
+  .then((data) => {
+    if (data.adminExists) {
+      alertAndRedirectToLogin("Admin account already registered.", "warning");
+    }
+  })
+  .catch((err) => {
+    console.error(err);
+  });
+
 const fullName = document.getElementById("name");
 const email = document.getElementById("email");
 const phoneNumber = document.getElementById("phoneNumber");
 const password = document.getElementById("password");
 const confirmPassword = document.getElementById("confirmPassword");
+const createAdminSubmitBtn = form.querySelector("button[type='submit']");
 
 fullName.addEventListener("blur", function () {
   validateName(fullName, "nameError");
@@ -49,24 +62,37 @@ form.addEventListener("submit", function (e) {
     return;
   }
 
+  createAdminSubmitBtn.disabled = true;
+  createAdminSubmitBtn.textContent = "Creating account…";
+
   let formData = new FormData();
   formData.append("name", fullName.value);
   formData.append("email", email.value);
   formData.append("phoneNumber", phoneNumber.value);
   formData.append("password", password.value);
 
-  console.log(formData);
-
-  fetch("/safedose/controller/register.php", {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => response.json())
+  fetch("/safedose/controller/register.php", { method: "POST", body: formData })
+    .then((r) => r.json())
     .then((data) => {
       if (data.success) {
-        window.location.href = "/safedose/auth/login.php";
+        alertAndRedirectToLogin(data.message, "success");
+      } else {
+        alertAndRedirectToLogin(data.message, "warning");
       }
-      console.log(data);
     })
-    .catch((err) => console.error(err));
+    .catch((err) => {
+      console.error(err);
+    });
 });
+
+function alertAndRedirectToLogin(message, type = "warning") {
+  form.style.display = "none";
+  form.previousElementSibling.style.display = "none";
+  const msg = document.createElement("div");
+  msg.className = `alert alert-${type} text-center mt-3`;
+  msg.textContent = message + " Redirecting to login...";
+  form.parentElement.appendChild(msg);
+  setTimeout(() => {
+    window.location.href = "/safedose/auth/login.php";
+  }, 2000);
+}
