@@ -73,7 +73,10 @@ form.addEventListener("submit", function (e) {
   formData.append("phoneNumber", phoneNumber.value);
   formData.append("password", password.value);
 
-  fetch("/safedose/controller/register.php", { method: "POST", body: formData })
+  fetch("/safedose/controller/auth/register.php", {
+    method: "POST",
+    body: formData,
+  })
     .then((r) => r.json())
     .then((data) => {
       if (data.success) {

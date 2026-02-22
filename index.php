@@ -10,7 +10,7 @@
   <h1>Hello Safe Dose</h1>
 
   <script>
-    fetch("/safedose/controller/adminExists.php", { method: "GET" })
+    fetch("/safedose/controller/auth/adminExists.php", { method: "GET" })
     .then((r) => r.json())
     .then((data) => {
       if (data.success) {
