@@ -18,6 +18,7 @@ const phoneNumber = document.getElementById("phoneNumber");
 const password = document.getElementById("password");
 const confirmPassword = document.getElementById("confirmPassword");
 const createAdminSubmitBtn = form.querySelector("button[type='submit']");
+const createAdminError = document.getElementById("createAdminError");
 
 fullName.addEventListener("blur", function () {
   validateName(fullName, "nameError");
@@ -64,6 +65,7 @@ form.addEventListener("submit", function (e) {
 
   createAdminSubmitBtn.disabled = true;
   createAdminSubmitBtn.textContent = "Creating account…";
+  createAdminError.classList.add("d-none");
 
   let formData = new FormData();
   formData.append("name", fullName.value);
@@ -82,6 +84,10 @@ form.addEventListener("submit", function (e) {
     })
     .catch((err) => {
       console.error(err);
+      createAdminSubmitBtn.disabled = false;
+      createAdminSubmitBtn.textContent = "Create Admin Account";
+      createAdminError.textContent = "Something went wrong. Please try again.";
+      createAdminError.classList.remove("d-none");
     });
 });
 

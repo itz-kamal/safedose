@@ -100,7 +100,7 @@ private function validatePassword($password) {
             $expiresAt = date('Y-m-d H:i:s', strtotime('+8 hours'));
             $stmt = $this->getConnection()->prepare("INSERT INTO tokens (user_id, token, expires_at) VALUES (?, ?, ?)");
             if ($stmt) {
-                $stmt->bind_param("isss", $user['id'], $token, $expiresAt);
+                $stmt->bind_param("iss", $user['id'], $token, $expiresAt);
                 $stmt->execute();
             }
 

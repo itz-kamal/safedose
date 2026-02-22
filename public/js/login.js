@@ -1,30 +1,65 @@
-document.addEventListener("DOMContentLoaded", function () {
-  let form = document.getElementById("loginForm");
+const existingUser = JSON.parse(localStorage.getItem("safedoseUser") || "null");
+if (existingUser && new Date(existingUser.expiresAt) > new Date()) {
+  if (existingUser.role === "admin") {
+    window.location.href = "/safedose/dashboard/index.php";
+  } else {
+    window.location.href = "/safedose/dashboard/staff.php";
+  }
+}
 
-  let email = document.getElementById("email");
-  let password = document.getElementById("password");
+const form = document.getElementById("loginForm");
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+const loginBtn = form.querySelector("button[type='submit']");
+const loginError = document.getElementById("loginError");
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
 
-    if (email.value.length == 0 || password.value.length == 0) {
-      return;
-    }
-    let formData = new FormData();
-    formData.append("email", email.value);
-    formData.append("password", password.value);
+  const isEmailValid = validateEmail(email, "emailError");
 
-    fetch("/safedose/controller/login.php", {
-      method: "POST",
-      body: formData,
+  let isPasswordValid = true;
+  if (password.value.length === 0) {
+    setError(password, "passwordError", "Password is required");
+    isPasswordValid = false;
+  } else {
+    setError(password, "passwordError", "");
+  }
+
+  if (!isEmailValid || !isPasswordValid) {
+    return;
+  }
+
+  loginBtn.disabled = true;
+  loginBtn.textContent = "Logging in…";
+  loginError.classList.add("d-none");
+
+  const formData = new FormData();
+  formData.append("email", email.value);
+  formData.append("password", password.value);
+
+  fetch("/safedose/controller/login.php", { method: "POST", body: formData })
+    .then((r) => r.json())
+    .then((data) => {
+      if (data.success) {
+        localStorage.setItem("safedoseUser", JSON.stringify(data.user));
+        if (data.user.role === "admin") {
+          window.location.href = "/safedose/dashboard/index.php";
+        } else {
+          window.location.href = "/safedose/dashboard/staff.php";
+        }
+      } else {
+        loginError.textContent = data.message;
+        loginError.classList.remove("d-none");
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Login";
+      }
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        // if (data.success) {
-        //   window.location.href = "/safedose/dashboard/index.php";
-        // }
-      })
-      .catch((err) => console.error(err));
-  });
+    .catch((err) => {
+      console.error(err);
+      loginError.textContent = "Something went wrong. Please try again.";
+      loginError.classList.remove("d-none");
+      loginBtn.disabled = false;
+      loginBtn.textContent = "Login";
+    });
 });

@@ -26,19 +26,20 @@
             <form id="loginForm">
               <div class="mb-3">
                 <label for="email" class="form-label fw-semibold">Email</label>
-                <input type="email" class="form-control" id="email" />
+                <input type="email" class="form-control" id="email" autocomplete="email" />
                 <div class="invalid-feedback" id="emailError"></div>
               </div>
 
               <div class="mb-4">
                 <label for="password" class="form-label fw-semibold">Password</label>
-                <input type="password" class="form-control" id="password" />
+                <input type="password" class="form-control" id="password" autocomplete="password" />
                 <div class="invalid-feedback" id="passwordError"></div>
               </div>
 
               <button type="submit" class="btn btn-primary-custom w-100 py-2 fw-semibold text-white">
                 Login
               </button>
+              <div id="loginError" class="alert alert-danger mt-3 d-none"></div>
             </form>
           </div>
         </div>
@@ -47,6 +48,7 @@
   </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+       <script src="../public/js/validate.js"></script>
     <script src="../public/js/login.js"></script>
   </body>
 </html>

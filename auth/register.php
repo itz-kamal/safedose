@@ -62,6 +62,8 @@
                 <button type="submit" class="btn btn-primary-custom w-100 py-2 fw-semibold text-white">
                   Create Admin Account
                 </button>
+
+                <div id="createAdminError" class="alert alert-danger mt-3 d-none"></div>
               </form>
             </div>
           </div>
