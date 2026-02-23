@@ -34,7 +34,10 @@ form.addEventListener("submit", function (e) {
   formData.append("email", email.value);
   formData.append("password", password.value);
 
-  fetch("/safedose/controller/login.php", { method: "POST", body: formData })
+  fetch("/safedose/controller/auth/login.php", {
+    method: "POST",
+    body: formData,
+  })
     .then((r) => r.json())
     .then((data) => {
       if (data.success) {
