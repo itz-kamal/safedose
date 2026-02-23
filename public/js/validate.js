@@ -29,7 +29,7 @@ function validatePhoneNumber(input, errorId) {
     setError(input, errorId, "Phone number is required");
     return false;
   }
-  let phonePattern = /^0[\d\s\-]{9,12}$/;
+  let phonePattern = /^0\d{10}$/;
   if (!phonePattern.test(value)) {
     setError(input, errorId, "Enter a valid phone number");
     return false;

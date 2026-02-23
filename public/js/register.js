@@ -79,7 +79,10 @@ form.addEventListener("submit", function (e) {
       if (data.success) {
         alertAndRedirectToLogin(data.message, "success");
       } else {
-        alertAndRedirectToLogin(data.message, "warning");
+        createAdminSubmitBtn.disabled = false;
+        createAdminSubmitBtn.textContent = "Create Admin Account";
+        createAdminError.textContent = data.message;
+        createAdminError.classList.remove("d-none");
       }
     })
     .catch((err) => {

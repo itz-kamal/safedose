@@ -7,7 +7,7 @@ class Auth extends DBConnection {
   }
 
   private function validatePhoneNumber($phoneNumber) {
-      return preg_match('/^0\d{10}$/', $phoneNumber);
+    return preg_match('/^0\d{10}$/', $phoneNumber);
   }
 
 private function validatePassword($password) {
