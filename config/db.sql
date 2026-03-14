@@ -20,3 +20,6 @@ CREATE TABLE tokens (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+INSERT INTO users (name, email, password, phone, role) VALUES
+('John Doe', 'superadmin@gmail.com', '$2y$10$L0CWHKDdiupy7.yegrP73el0Tdpna22seh8qlkjl1qen/k3D17UoO', 07849026488, 'admin');

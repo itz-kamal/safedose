@@ -1,32 +1,7 @@
 <?php
 
 class Auth extends DBConnection {
-
-  private function validateEmail($email) {
-      return filter_var($email, FILTER_VALIDATE_EMAIL);
-  }
-
-  private function validatePhoneNumber($phoneNumber) {
-    return preg_match('/^0\d{10}$/', $phoneNumber);
-  }
-
-private function validatePassword($password) {
-    if (strlen($password) < 8) return false;
-    if (!preg_match('/[A-Z]/', $password)) return false;
-    if (!preg_match('/[0-9]/', $password)) return false;
-    if (!preg_match('/[!@#$%^&*()\-_=+\[\]{};:\'",.<>?\/\\\\|]/', $password)) return false;
-    return true;
-}
-
-
-  private function emailExists($email) {
-      $stmt = $this->getConnection()->prepare("SELECT id FROM users WHERE email = ?");
-      if (!$stmt) return false;
-      $stmt->bind_param("s", $email);
-      $stmt->execute();
-      $stmt->store_result();
-      return $stmt->num_rows > 0;
-  }
+use ValidationTrait;
 
   private function adminExists() {
     $stmt = $this->getConnection()->prepare("SELECT id FROM users WHERE role = 'admin'");
@@ -47,37 +22,6 @@ private function validatePassword($password) {
           return $user['status'] === 'active';
       }
       return false;
-  }
-
-  public function registerAdmin($name, $email, $phoneNumber, $password) {
-      $conn = $this->getConnection();
-
-      if (!$this->validateEmail($email)) {
-          return ['success' => false, 'message' => 'Invalid email format'];
-      }
-
-      if (!$this->validatePhoneNumber($phoneNumber)) {
-          return ['success' => false, 'message' => 'Invalid phone number format'];
-      }
-
-      if (!$this->validatePassword($password)) {
-          return ['success' => false, 'message' => 'Password must be at least 6 characters long'];
-      }
-
-      if ($this->emailExists($email)) {
-          return ['success' => false, 'message' => 'Email already registered'];
-      }
-
-      $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-      $stmt = $conn->prepare("INSERT INTO users (name, email, password, phone, role, status) VALUES (?, ?, ?, ?, 'admin', 'active')");
-      $stmt->bind_param("ssss", $name, $email, $hashedPassword, $phoneNumber);
-      $stmt->execute();
-
-      if ($stmt->affected_rows > 0) {
-          return ['success' => true, 'message' => 'Admin account created successfully'];
-      } else {
-          return ['success' => false, 'message' => 'Failed to create admin account'];
-      }
   }
 
   public function login($email, $password) {

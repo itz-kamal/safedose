@@ -1,3 +1,7 @@
+<?php
+  header('location: auth/login.php');
+  exit();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,20 +12,5 @@
 </head>
 <body>
   <h1>Hello Safe Dose</h1>
-
-  <script>
-    fetch("/safedose/controller/auth/adminExists.php", { method: "GET" })
-    .then((r) => r.json())
-    .then((data) => {
-      if (data.success) {
-        window.location.href = data.adminExists ? "/safedose/auth/login.php" : "/safedose/auth/register.php";
-      } else {
-        window.location.href = "/safedose/auth/login.php";
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-  </script>
 </body>
 </html>
