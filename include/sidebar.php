@@ -19,6 +19,7 @@
       </a>
     </li>
     <li>
+      <a href="/safedose/dashboard/admin/staff-list.php">
       <a href="#">
         <i class="fa-solid fa-users"></i>
         <span>View Staff</span>
