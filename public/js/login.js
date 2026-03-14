@@ -1,6 +1,6 @@
 const existingUser = JSON.parse(localStorage.getItem("safedoseUser") || "null");
 if (existingUser && new Date(existingUser.expiresAt) > new Date()) {
-  window.location.href = "/safedose/dashboard/index.php";
+  window.location.href = "/safedose/dashboard/admin/index.php";
 }
 
 const form = document.getElementById("loginForm");
@@ -42,7 +42,7 @@ form.addEventListener("submit", function (e) {
     .then((data) => {
       if (data.success) {
         localStorage.setItem("safedoseUser", JSON.stringify(data.user));
-        window.location.href = "/safedose/dashboard/index.php";
+        window.location.href = "/safedose/dashboard/admin/index.php";
       } else {
         loginError.textContent = data.message;
         loginError.classList.remove("d-none");
