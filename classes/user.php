@@ -46,14 +46,14 @@ class User extends DBConnection
 
     public function validateToken($token)
     {
-        $stmt = $this->getConnection()->prepare("SELECT user_id FROM tokens WHERE token = ?");
+        $stmt = $this->getConnection()->prepare("SELECT user_id, expires_at FROM tokens WHERE token = ?");
         if (!$stmt) return false;
         $stmt->bind_param("s", $token);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
             $tokenData = $result->fetch_assoc();
-            $expiryTime = strtotime($tokenData['expiry']);
+            $expiryTime = strtotime($tokenData['expires_at']);
             if (time() < $expiryTime) {
                 return $tokenData['user_id'];
             } else {
