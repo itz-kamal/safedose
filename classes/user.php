@@ -62,57 +62,57 @@ class User extends DBConnection
                     $stmt->bind_param("s", $token);
                     $stmt->execute();
                 }
-                return ['success' => false, 'message' => 'Token expired'];
+                return false;
             }
         } else {
-            return ['success' => false, 'message' => 'Invalid token'];
+            return false;
         }
     }
 
   public function createUser($name, $email, $phoneNumber, $password, $token) {
-    $conn = $this->getConnection();
-    if (!$this->validateEmail($email)) {
-        return ['success' => false, 'message' => 'Invalid email format'];
-    }
-    if (!$this->validatePhoneNumber($phoneNumber)) {
-        return ['success' => false, 'message' => 'Invalid phone number format'];
-    }
-    if (!$this->validatePassword($password)) {
-        return ['success' => false, 'message' => 'Password must be at least 8 characters long and include an uppercase letter, a number, and a special character'];
-    }
-    if ($this->emailExists($email)) {
-        return ['success' => false, 'message' => 'Email already registered'];
-    }
+        $conn = $this->getConnection();
+        if (!$this->validateEmail($email)) {
+            return ['success' => false, 'message' => 'Invalid email format'];
+        }
+        if (!$this->validatePhoneNumber($phoneNumber)) {
+            return ['success' => false, 'message' => 'Invalid phone number format'];
+        }
+        if (!$this->validatePassword($password)) {
+            return ['success' => false, 'message' => 'Password must be at least 8 characters long and include an uppercase letter, a number, and a special character'];
+        }
+        if ($this->emailExists($email)) {
+            return ['success' => false, 'message' => 'Email already registered'];
+        }
+        $userId = $this->validateToken($token);
 
-    $userId = $this->validateToken($token);
-    if (!$userId) {
-        return ['success' => false, 'message' => 'Invalid or expired token'];
-    }
-    if (!$this->isUserActive($userId)) {
-        return ['success' => false, 'message' => 'User account is inactive'];
-    }
+        if (!$userId) {
+            return ['success' => false, 'message' => 'Invalid or expired token'];
+        }
+        if (!$this->isUserActive($userId)) {
+            return ['success' => false, 'message' => 'User account is inactive'];
+        }
+        $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows === 0) {
+            return ['success' => false, 'message' => 'User not found'];
+        }
+        $user = $result->fetch_assoc();
+        if ($user['role'] !== 'admin') {
+            return ['success' => false, 'message' => 'Unauthorized: Only admins can add users'];
+        }
 
-    $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows === 0) {
-        return ['success' => false, 'message' => 'User not found'];
+        $message = "New user registration:\nName: $name\nEmail: $email\nPhone: $phoneNumber, Password: $password";
+        mail($email, "New User Registration", $message);
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        $stmt = $conn->prepare("INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, 'user')");
+        $stmt->bind_param("ssss", $name, $email, $phoneNumber, $hashedPassword);
+        if ($stmt->execute()) {
+            return ['success' => true, 'message' => 'User registered successfully'];
+        }
+        return ['success' => false, 'message' => 'Database error: ' . $stmt->error];
     }
-
-    $user = $result->fetch_assoc();
-    if ($user['role'] !== 'admin') {
-        return ['success' => false, 'message' => 'Unauthorized: Only admins can add users'];
-    }
-    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-    $stmt = $conn->prepare("INSERT INTO users (name, email, phone_number, password, role) VALUES (?, ?, ?, ?, 'user')");
-    $stmt->bind_param("ssss", $name, $email, $phoneNumber, $hashedPassword);
-
-    if ($stmt->execute()) {
-        return ['success' => true, 'message' => 'User registered successfully'];
-    }
-    return ['success' => false, 'message' => 'Database error: ' . $stmt->error];
-  }
 
     public function getUsers($token)
     {
