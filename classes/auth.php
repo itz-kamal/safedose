@@ -120,6 +120,14 @@ private function validatePassword($password) {
   public function isAdminExists() {
     return ['success' => true, 'adminExists' => $this->adminExists()];
   }
+
+  public function logout($token) {
+    $stmt = $this->getConnection()->prepare("DELETE FROM tokens WHERE token = ?");
+    if (!$stmt) return ['success' => false, 'message' => 'Logout error'];
+    $stmt->bind_param("s", $token);
+    $stmt->execute();
+    return ['success' => true, 'message' => 'Logout successful'];
+  }
 }
 
 ?>
