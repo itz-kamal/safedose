@@ -66,7 +66,7 @@ form.addEventListener("submit", (e) => {
   formData.append("password", password.value);
   formData.append("token", window.currentUser.token);
 
-  fetch("/safedose/controller/staff/create.php", {
+  fetch("/safedose/controller/user/create-staff.php", {
     method: "POST",
     body: formData,
   })
