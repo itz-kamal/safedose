@@ -84,6 +84,7 @@ class User extends DBConnection
     }
 
   public function createUser($name, $email, $phoneNumber, $password, $token) {
+    // create a user
         $conn = $this->getConnection();
         if (!$this->validateEmail($email)) {
             return ['success' => false, 'message' => 'Invalid email format'];
