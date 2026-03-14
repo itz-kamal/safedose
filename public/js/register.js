@@ -1,7 +1,7 @@
 const form = document.getElementById("createAdminForm");
 
 //We first check if the admin exist
-fetch("/safedose/controller/adminExists.php")
+fetch("/safedose/controller/auth/adminExists.php")
   .then((r) => r.json())
   .then((data) => {
     if (data.adminExists) {
