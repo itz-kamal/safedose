@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/traits/validationTrait.php';
+
 class Auth extends DBConnection {
 use ValidationTrait;
 

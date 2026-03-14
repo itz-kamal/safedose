@@ -1,6 +1,7 @@
 const form = document.getElementById("staffCreateForm");
 const staffName = document.getElementById("staffName");
 const email = document.getElementById("email");
+const phoneNumber = document.getElementById("phoneNumber");
 const password = document.getElementById("password");
 const submitBtn = form.querySelector("button[type='submit']");
 const staffError = document.getElementById("staffError");
@@ -40,14 +41,16 @@ function copyPassword() {
 
 staffName.addEventListener("blur", () => validateName(staffName, "nameError"));
 email.addEventListener("blur", () => validateEmail(email, "emailError"));
+phoneNumber.addEventListener("blur", () => validatePhoneNumber(phoneNumber, "phoneError"));
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
   const isNameValid = validateName(staffName, "nameError");
   const isEmailValid = validateEmail(email, "emailError");
+  const isPhoneValid = validatePhoneNumber(phoneNumber, "phoneError");
 
-  if (!isNameValid || !isEmailValid) {
+  if (!isNameValid || !isEmailValid || !isPhoneValid) {
     return;
   }
 
@@ -59,10 +62,11 @@ form.addEventListener("submit", (e) => {
   const formData = new FormData();
   formData.append("name", staffName.value);
   formData.append("email", email.value);
+  formData.append("phoneNumber", phoneNumber.value);
   formData.append("password", password.value);
   formData.append("token", window.currentUser.token);
 
-  fetch("/safedose/controller/staff/create.php", {
+  fetch("/safedose/controller/user/create-staff.php", {
     method: "POST",
     body: formData,
   })
