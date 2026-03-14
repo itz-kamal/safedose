@@ -7,12 +7,17 @@ class Auth extends DBConnection {
   }
 
   private function validatePhoneNumber($phoneNumber) {
-      return preg_match('/^0\d{10}$/', $phoneNumber);
+    return preg_match('/^0\d{10}$/', $phoneNumber);
   }
 
-  private function validatePassword($password) {
-      return strlen($password) >= 6;
-  }
+private function validatePassword($password) {
+    if (strlen($password) < 8) return false;
+    if (!preg_match('/[A-Z]/', $password)) return false;
+    if (!preg_match('/[0-9]/', $password)) return false;
+    if (!preg_match('/[!@#$%^&*()\-_=+\[\]{};:\'",.<>?\/\\\\|]/', $password)) return false;
+    return true;
+}
+
 
   private function emailExists($email) {
       $stmt = $this->getConnection()->prepare("SELECT id FROM users WHERE email = ?");
@@ -95,7 +100,7 @@ class Auth extends DBConnection {
             $expiresAt = date('Y-m-d H:i:s', strtotime('+8 hours'));
             $stmt = $this->getConnection()->prepare("INSERT INTO tokens (user_id, token, expires_at) VALUES (?, ?, ?)");
             if ($stmt) {
-                $stmt->bind_param("isss", $user['id'], $token, $expiresAt);
+                $stmt->bind_param("iss", $user['id'], $token, $expiresAt);
                 $stmt->execute();
             }
 
@@ -114,6 +119,14 @@ class Auth extends DBConnection {
 
   public function isAdminExists() {
     return ['success' => true, 'adminExists' => $this->adminExists()];
+  }
+
+  public function logout($token) {
+    $stmt = $this->getConnection()->prepare("DELETE FROM tokens WHERE token = ?");
+    if (!$stmt) return ['success' => false, 'message' => 'Logout error'];
+    $stmt->bind_param("s", $token);
+    $stmt->execute();
+    return ['success' => true, 'message' => 'Logout successful'];
   }
 }
 
