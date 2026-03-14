@@ -42,7 +42,7 @@
 
                   <div class="col-md-6">
                     <label for="phoneNumber" class="form-label fw-semibold">Phone Number</label>
-                    <input type="tel" class="form-control" id="phoneNumber" placeholder="07911 123456" autocomplete="tel" />
+                    <input type="tel" class="form-control" id="phoneNumber" placeholder="07911123456" autocomplete="tel" />
                     <div class="invalid-feedback" id="phoneError"></div>
                   </div>
                 </div>

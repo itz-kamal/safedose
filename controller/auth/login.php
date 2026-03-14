@@ -1,8 +1,8 @@
 <?php
 header('Content-Type: application/json');
 
-require_once '../classes/db.php';
-require_once '../classes/auth.php';
+require_once '../../classes/db.php';
+require_once '../../classes/auth.php';
 
 $auth = new Auth();
 
