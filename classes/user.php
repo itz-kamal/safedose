@@ -114,19 +114,6 @@ class User extends DBConnection
     return ['success' => false, 'message' => 'Database error: ' . $stmt->error];
   }
 
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        $stmt = $conn->prepare("INSERT INTO users (name, email, phone_number, password, role) VALUES (?, ?, ?, ?, 'user')");
-        if (!$stmt) {
-            return ['success' => false, 'message' => 'Database error: ' . $conn->error];
-        }
-        $stmt->bind_param("ssss", $name, $email, $phoneNumber, $hashedPassword);
-        if ($stmt->execute()) {
-            return ['success' => true, 'message' => 'User registered successfully'];
-        } else {
-            return ['success' => false, 'message' => 'Database error: ' . $stmt->error];
-        }
-    }
-
     public function getUsers($token)
     {
         $userId = $this->validateToken($token);
