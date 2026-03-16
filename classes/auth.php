@@ -13,19 +13,6 @@ use ValidationTrait;
     return $stmt->num_rows > 0;
   }
 
-  private function userIsActive($email) {
-      $stmt = $this->getConnection()->prepare("SELECT status FROM users WHERE email = ?");
-      if (!$stmt) return false;
-      $stmt->bind_param("s", $email);
-      $stmt->execute();
-      $result = $stmt->get_result();
-      if ($result->num_rows > 0) {
-          $user = $result->fetch_assoc();
-          return $user['status'] === 'active';
-      }
-      return false;
-  }
-
   public function login($email, $password) {
       $stmt = $this->getConnection()->prepare("SELECT * FROM users WHERE email = ?");
       if (!$stmt) return ['success' => false, 'message' => 'Database error'];
@@ -34,12 +21,11 @@ use ValidationTrait;
       $stmt->execute();
       $result = $stmt->get_result();
 
-      if (!$this->userIsActive($email)) {
-          return ['success' => false, 'message' => 'User account is inactive'];
-      }
-
       if ($result->num_rows > 0) {
           $user = $result->fetch_assoc();
+          if ($user['status'] !== 'active') {
+              return ['success' => false, 'message' => 'User account is inactive'];
+          }
           if (password_verify($password, $user['password'])) {
             $token = bin2hex(random_bytes(32));
 

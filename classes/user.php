@@ -44,6 +44,20 @@ class User extends DBConnection
         return false;
     }
 
+    private function isSuperAdmin($userId)
+    {
+        $stmt = $this->getConnection()->prepare("SELECT is_super FROM users WHERE id = ?");
+        if (!$stmt) return false;
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+            return (int) $user['is_super'] === 1;
+        }
+        return false;
+    }
+
     public function validateToken($token)
     {
         $stmt = $this->getConnection()->prepare("SELECT user_id, expires_at FROM tokens WHERE token = ?");
@@ -106,7 +120,7 @@ class User extends DBConnection
         $message = "New user registration:\nName: $name\nEmail: $email\nPhone: $phoneNumber, Password: $password";
         mail($email, "New User Registration", $message);
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        $stmt = $conn->prepare("INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, 'user')");
+        $stmt = $conn->prepare("INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, 'staff')");
         $stmt->bind_param("ssss", $name, $email, $phoneNumber, $hashedPassword);
         if ($stmt->execute()) {
             return ['success' => true, 'message' => 'User registered successfully'];
@@ -129,5 +143,62 @@ class User extends DBConnection
             $users[] = $row;
         }
         return ['success' => true, 'message' => 'All Users', 'data' => $users];
+    }
+
+    public function getStaff($token)
+    {
+        $userId = $this->validateToken($token);
+        if (!$userId || !$this->isAdmin($userId)) {
+            return ['success' => false, 'message' => 'Unauthorized'];
+        }
+        $stmt = $this->getConnection()->prepare("SELECT id, name, email, phone, role, status FROM users WHERE id != ?");
+        if (!$stmt) return ['success' => false, 'message' => 'Database error: ' . $this->getConnection()->error];
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $staff = [];
+        while ($row = $result->fetch_assoc()) {
+            $staff[] = $row;
+        }
+        return ['success' => true, 'data' => $staff, 'isSuperAdmin' => $this->isSuperAdmin($userId)];
+    }
+
+    public function updateStatus($targetUserId, $status, $token)
+    {
+        $userId = $this->validateToken($token);
+        if (!$userId || !$this->isAdmin($userId)) {
+            return ['success' => false, 'message' => 'Unauthorized'];
+        }
+        if (!in_array($status, ['active', 'inactive'])) {
+            return ['success' => false, 'message' => 'Invalid status'];
+        }
+        $stmt = $this->getConnection()->prepare("UPDATE users SET status = ? WHERE id = ? AND id != ? AND role = 'staff'");
+        if (!$stmt) return ['success' => false, 'message' => 'Database error'];
+        $stmt->bind_param("sii", $status, $targetUserId, $userId);
+        if ($stmt->execute()) {
+            return ['success' => true, 'message' => 'Status updated'];
+        }
+        return ['success' => false, 'message' => 'Database error: ' . $stmt->error];
+    }
+
+    public function updateRole($targetUserId, $role, $token)
+    {
+        $userId = $this->validateToken($token);
+        if (!$userId || !$this->isSuperAdmin($userId)) {
+            return ['success' => false, 'message' => 'Unauthorized'];
+        }
+        if (!in_array($role, ['admin', 'staff'])) {
+            return ['success' => false, 'message' => 'Invalid role'];
+        }
+        if ($targetUserId === $userId) {
+            return ['success' => false, 'message' => 'Cannot change your own role'];
+        }
+        $stmt = $this->getConnection()->prepare("UPDATE users SET role = ? WHERE id = ?");
+        if (!$stmt) return ['success' => false, 'message' => 'Database error'];
+        $stmt->bind_param("si", $role, $targetUserId);
+        if ($stmt->execute()) {
+            return ['success' => true, 'message' => 'Role updated'];
+        }
+        return ['success' => false, 'message' => 'Database error: ' . $stmt->error];
     }
 }

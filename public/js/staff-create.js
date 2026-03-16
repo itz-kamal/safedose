@@ -41,7 +41,9 @@ function copyPassword() {
 
 staffName.addEventListener("blur", () => validateName(staffName, "nameError"));
 email.addEventListener("blur", () => validateEmail(email, "emailError"));
-phoneNumber.addEventListener("blur", () => validatePhoneNumber(phoneNumber, "phoneError"));
+phoneNumber.addEventListener("blur", () =>
+  validatePhoneNumber(phoneNumber, "phoneError"),
+);
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();

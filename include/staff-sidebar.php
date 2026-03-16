@@ -7,21 +7,9 @@
 
   <ul class="nav-items">
     <li>
-      <a href="/safedose/dashboard/admin/index.php">
+      <a href="/safedose/dashboard/staff/index.php">
         <i class="fa-solid fa-house"></i>
         <span>Dashboard</span>
-      </a>
-    </li>
-    <li>
-      <a href="/safedose/dashboard/admin/staff-create.php">
-        <i class="fa-solid fa-user-plus"></i>
-        <span>Create Staff</span>
-      </a>
-    </li>
-    <li>
-      <a href="/safedose/dashboard/admin/staff-list.php">
-        <i class="fa-solid fa-users"></i>
-        <span>View Staff</span>
       </a>
     </li>
   </ul>
