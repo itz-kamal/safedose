@@ -38,7 +38,7 @@
                 <th>Dosage Form</th>
                 <th>Dosage Strength	</th>
                 <th>Qty</th>
-                <th>Price (₦)</th>
+                <th>Price (£)</th>
                 <th>Expiry</th>
                 <th>Manufacturer</th>
                 <th>Actions</th>

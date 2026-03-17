@@ -21,10 +21,10 @@ document.addEventListener("DOMContentLoaded", () => {
       medicineTableBody.innerHTML = "";
 
       if (data.success && data.data.length > 0) {
-        data.data.forEach((med) => {
+        data.data.forEach((med, index) => {
           const row = `
             <tr>
-              <td>${med.id}</td>
+              <td>${index + 1}</td>
               <td>${med.name}</td>
               <td>${med.category}</td>
               <td>${med.dosage}</td>

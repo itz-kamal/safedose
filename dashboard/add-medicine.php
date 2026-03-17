@@ -88,7 +88,7 @@
                   <div class="invalid-feedback" id="quantityError"></div>
                 </div>
                 <div class="col-md-4">
-                  <label for="unitPrice" class="form-label fw-semibold">Unit Price (₦) <span class="text-danger">*</span></label>
+                  <label for="unitPrice" class="form-label fw-semibold">Unit Price (£) <span class="text-danger">*</span></label>
                   <input type="number" class="form-control" id="unitPrice" placeholder="0.00" min="0" step="0.01" />
                   <div class="invalid-feedback" id="unitPriceError"></div>
                 </div>

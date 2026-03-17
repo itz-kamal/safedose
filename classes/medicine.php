@@ -58,7 +58,7 @@ class Medicine {
     }
 
     $stmt = $conn->prepare("INSERT INTO medicine (name, generic_name, category, dosage, dosage_strength, quantity, price, expiry_date, manufacturer, description, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssidsiss", $name, $generic_name, $category, $dosage, $dosage_strength, $quantity, $price, $expiry_date, $manufacturer, $description, $userId);
+    $stmt->bind_param("sssssidssss", $name, $generic_name, $category, $dosage, $dosage_strength, $quantity, $price, $expiry_date, $manufacturer, $description, $userId);
     if ($stmt->execute()) {
       return ['success' => true, 'message' => 'Medicine added successfully'];
     } else {
