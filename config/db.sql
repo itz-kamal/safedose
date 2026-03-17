@@ -35,7 +35,7 @@ CREATE TABLE medicine (
     quantity INT DEFAULT 0,
     price DECIMAL(10,2) DEFAULT 0.00,
     expiry_date DATE NOT NULL,
-    manufacturer VARCHAR(100),
+    manufacturer VARCHAR(150),
     description TEXT,
     user_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

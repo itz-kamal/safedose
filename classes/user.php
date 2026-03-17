@@ -60,27 +60,24 @@ class User extends DBConnection
 
     public function validateToken($token)
     {
-        $stmt = $this->getConnection()->prepare("SELECT user_id, expires_at FROM tokens WHERE token = ?");
+        $conn = $this->getConnection();
+        $stmt = $conn->prepare("SELECT user_id FROM tokens WHERE token = ? AND expires_at > NOW()");
+
         if (!$stmt) return false;
         $stmt->bind_param("s", $token);
-        $stmt->execute();
+        if (!$stmt->execute()) return false;
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
-            $tokenData = $result->fetch_assoc();
-            $expiryTime = strtotime($tokenData['expires_at']);
-            if (time() < $expiryTime) {
-                return $tokenData['user_id'];
-            } else {
-                $stmt = $this->getConnection()->prepare("DELETE FROM tokens WHERE token = ?");
-                if ($stmt) {
-                    $stmt->bind_param("s", $token);
-                    $stmt->execute();
-                }
-                return false;
-            }
-        } else {
-            return false;
+            $data = $result->fetch_assoc();
+            return $data['user_id'];
         }
+
+        $cleanup = $conn->prepare("DELETE FROM tokens WHERE token = ? AND expires_at <= NOW()");
+        if ($cleanup) {
+            $cleanup->bind_param("s", $token);
+            $cleanup->execute();
+        }
+        return false;
     }
 
   public function createUser($name, $email, $phoneNumber, $password, $token) {
