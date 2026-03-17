@@ -16,7 +16,7 @@ class User extends DBConnection
         return $stmt->num_rows > 0;
     }
 
-    private function isUserActive($userId)
+    public function isUserActive($userId)
     {
         $stmt = $this->getConnection()->prepare("SELECT status FROM users WHERE id = ?");
         if (!$stmt) return false;
@@ -30,7 +30,7 @@ class User extends DBConnection
         return false;
     }
 
-    private function isAdmin($userId)
+    public function isAdmin($userId)
     {
         $stmt = $this->getConnection()->prepare("SELECT role FROM users WHERE id = ?");
         if (!$stmt) return false;
@@ -135,7 +135,7 @@ class User extends DBConnection
         if (!$this->isAdmin($userId)) {
             return ['success' => false, 'message' => 'Unauthorized: Only admins can view users'];
         }
-        $stmt = $this->getConnection()->prepare("SELECT id, name, email, phone_number, status FROM users");
+        $stmt = $this->getConnection()->prepare("SELECT id, name, email, phone, status FROM users");
         if (!$stmt) return ['success' => false, 'message' => 'Database error: ' . $this->getConnection()->error];
         $stmt->execute();
         $result = $stmt->get_result();
@@ -176,7 +176,9 @@ class User extends DBConnection
         $stmt = $this->getConnection()->prepare("UPDATE users SET status = ? WHERE id = ? AND id != ? AND role = 'staff'");
         if (!$stmt) return ['success' => false, 'message' => 'Database error'];
         $stmt->bind_param("sii", $status, $targetUserId, $userId);
-        if ($stmt->execute()) {
+        $stmt->execute();
+
+        if ($stmt->affected_rows > 0) {
             return ['success' => true, 'message' => 'Status updated'];
         }
         return ['success' => false, 'message' => 'Database error: ' . $stmt->error];
