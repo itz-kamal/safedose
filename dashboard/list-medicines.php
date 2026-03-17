@@ -32,7 +32,7 @@
           <table class="table table-hover align-middle mb-0">
             <thead class="table-dark">
               <tr>
-                <th>#</th>
+                <th>ID</th>
                 <th>Name</th>
                 <th>Category</th>
                 <th>Dosage Form</th>
@@ -59,6 +59,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../public/js/validate.js"></script>
   <script src="../public/js/medicine-list.js"></script>
 </body>
 </html>

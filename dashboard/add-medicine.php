@@ -111,7 +111,7 @@
                 <textarea class="form-control" id="description" rows="3" placeholder="Optional notes about this medicine..."></textarea>
               </div>
 
-              <button type="submit" class="btn btn-primary-custom w-100 py-2 fw-semibold text-white">
+              <button type="submit" id="submitBtn" class="btn btn-primary-custom w-100 py-2 fw-semibold text-white">
                 Add Medicine
               </button>
 

@@ -16,7 +16,7 @@ class User extends DBConnection
         return $stmt->num_rows > 0;
     }
 
-    private function isUserActive($userId)
+    public function isUserActive($userId)
     {
         $stmt = $this->getConnection()->prepare("SELECT status FROM users WHERE id = ?");
         if (!$stmt) return false;
@@ -30,7 +30,7 @@ class User extends DBConnection
         return false;
     }
 
-    private function isAdmin($userId)
+    public function isAdmin($userId)
     {
         $stmt = $this->getConnection()->prepare("SELECT role FROM users WHERE id = ?");
         if (!$stmt) return false;
@@ -60,30 +60,28 @@ class User extends DBConnection
 
     public function validateToken($token)
     {
-        $stmt = $this->getConnection()->prepare("SELECT user_id, expires_at FROM tokens WHERE token = ?");
+        $conn = $this->getConnection();
+        $stmt = $conn->prepare("SELECT user_id FROM tokens WHERE token = ? AND expires_at > NOW()");
+
         if (!$stmt) return false;
         $stmt->bind_param("s", $token);
-        $stmt->execute();
+        if (!$stmt->execute()) return false;
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
-            $tokenData = $result->fetch_assoc();
-            $expiryTime = strtotime($tokenData['expires_at']);
-            if (time() < $expiryTime) {
-                return $tokenData['user_id'];
-            } else {
-                $stmt = $this->getConnection()->prepare("DELETE FROM tokens WHERE token = ?");
-                if ($stmt) {
-                    $stmt->bind_param("s", $token);
-                    $stmt->execute();
-                }
-                return false;
-            }
-        } else {
-            return false;
+            $data = $result->fetch_assoc();
+            return $data['user_id'];
         }
+
+        $cleanup = $conn->prepare("DELETE FROM tokens WHERE token = ? AND expires_at <= NOW()");
+        if ($cleanup) {
+            $cleanup->bind_param("s", $token);
+            $cleanup->execute();
+        }
+        return false;
     }
 
   public function createUser($name, $email, $phoneNumber, $password, $token) {
+    // create a user
         $conn = $this->getConnection();
         if (!$this->validateEmail($email)) {
             return ['success' => false, 'message' => 'Invalid email format'];
@@ -134,7 +132,7 @@ class User extends DBConnection
         if (!$this->isAdmin($userId)) {
             return ['success' => false, 'message' => 'Unauthorized: Only admins can view users'];
         }
-        $stmt = $this->getConnection()->prepare("SELECT id, name, email, phone_number, status FROM users");
+        $stmt = $this->getConnection()->prepare("SELECT id, name, email, phone, status FROM users");
         if (!$stmt) return ['success' => false, 'message' => 'Database error: ' . $this->getConnection()->error];
         $stmt->execute();
         $result = $stmt->get_result();
@@ -175,7 +173,9 @@ class User extends DBConnection
         $stmt = $this->getConnection()->prepare("UPDATE users SET status = ? WHERE id = ? AND id != ? AND role = 'staff'");
         if (!$stmt) return ['success' => false, 'message' => 'Database error'];
         $stmt->bind_param("sii", $status, $targetUserId, $userId);
-        if ($stmt->execute()) {
+        $stmt->execute();
+
+        if ($stmt->affected_rows > 0) {
             return ['success' => true, 'message' => 'Status updated'];
         }
         return ['success' => false, 'message' => 'Database error: ' . $stmt->error];
