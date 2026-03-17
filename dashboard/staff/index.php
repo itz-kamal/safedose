@@ -13,7 +13,7 @@
 </head>
 <body>
 
-  <?php include("../../include/staff-sidebar.php"); ?>
+ <?php include("../../include/sidebar.php"); ?>
 
   <div class="greeting">
     <h5 id="greeting" class="fw-semibold mb-1"></h5>

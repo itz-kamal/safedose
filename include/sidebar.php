@@ -12,18 +12,30 @@
         <span>Dashboard</span>
       </a>
     </li>
-    <li>
+    <li show-admin-only>
       <a href="/safedose/dashboard/admin/staff-create.php">
         <i class="fa-solid fa-user-plus"></i>
         <span>Create Staff</span>
       </a>
     </li>
-    <li>
+    <li show-admin-only>
       <a href="/safedose/dashboard/admin/staff-list.php">
         <i class="fa-solid fa-users"></i>
         <span>View Staff</span>
       </a>
     </li>
+   <li>
+  <a href="/safedose/dashboard/add-medicine.php">
+    <i class="fa-solid fa-pills"></i>
+    <span>Add Medicine</span>
+  </a>
+</li>
+<li>
+  <a href="/safedose/dashboard/list-medicines.php">
+    <i class="fa-solid fa-list"></i>
+    <span>View Medicines</span>
+  </a>
+</li>
   </ul>
 
   <div class="logout">
@@ -53,5 +65,13 @@
       localStorage.removeItem("safedoseUser");
       window.location.href = "/safedose/auth/login.php";
     }
-  }
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    if (window.currentUser && window.currentUser.role !== "admin") {
+      document.querySelectorAll("[show-admin-only]").forEach((el) => {
+        el.style.display = "none";
+      });
+    }
+  });
 </script>
