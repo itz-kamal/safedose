@@ -54,20 +54,32 @@ function validateExpiry() {
     return false;
   }
   if (new Date(value) <= new Date()) {
-    showError("expiryDate", "expiryDateError", "Expiry date must be in the future.");
+    showError(
+      "expiryDate",
+      "expiryDateError",
+      "Expiry date must be in the future.",
+    );
     return false;
   }
   clearError("expiryDate", "expiryDateError");
   return true;
 }
 
-// Blur / change listeners
+// Blur listeners
 document.getElementById("medicineName").addEventListener("blur", function () {
-  validateTextField("medicineName", "medicineNameError", "Medicine name is required.");
+  validateTextField(
+    "medicineName",
+    "medicineNameError",
+    "Medicine name is required.",
+  );
 });
 
 document.getElementById("dosageStrength").addEventListener("blur", function () {
-  validateTextField("dosageStrength", "dosageStrengthError", "Dosage strength is required.");
+  validateTextField(
+    "dosageStrength",
+    "dosageStrengthError",
+    "Dosage strength is required.",
+  );
 });
 
 document.getElementById("quantity").addEventListener("blur", function () {
@@ -78,15 +90,19 @@ document.getElementById("unitPrice").addEventListener("blur", function () {
   validateNumber("unitPrice", "unitPriceError", "Unit price");
 });
 
-document.getElementById("category").addEventListener("change", function () {
+document.getElementById("category").addEventListener("blur", function () {
   validateSelect("category", "categoryError", "Please select a category.");
 });
 
-document.getElementById("dosageForm").addEventListener("change", function () {
-  validateSelect("dosageForm", "dosageFormError", "Please select a dosage form.");
+document.getElementById("dosageForm").addEventListener("blur", function () {
+  validateSelect(
+    "dosageForm",
+    "dosageFormError",
+    "Please select a dosage form.",
+  );
 });
 
-document.getElementById("expiryDate").addEventListener("change", function () {
+document.getElementById("expiryDate").addEventListener("blur", function () {
   validateExpiry();
 });
 
@@ -94,15 +110,47 @@ document.getElementById("expiryDate").addEventListener("change", function () {
 form.addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const isNameValid = validateTextField("medicineName", "medicineNameError", "Medicine name is required.");
-  const isCategoryValid = validateSelect("category", "categoryError", "Please select a category.");
-  const isDosageFormValid = validateSelect("dosageForm", "dosageFormError", "Please select a dosage form.");
-  const isStrengthValid = validateTextField("dosageStrength", "dosageStrengthError", "Dosage strength is required.");
-  const isQuantityValid = validateNumber("quantity", "quantityError", "Quantity");
-  const isPriceValid = validateNumber("unitPrice", "unitPriceError", "Unit price");
+  const isNameValid = validateTextField(
+    "medicineName",
+    "medicineNameError",
+    "Medicine name is required.",
+  );
+  const isCategoryValid = validateSelect(
+    "category",
+    "categoryError",
+    "Please select a category.",
+  );
+  const isDosageFormValid = validateSelect(
+    "dosageForm",
+    "dosageFormError",
+    "Please select a dosage form.",
+  );
+  const isStrengthValid = validateTextField(
+    "dosageStrength",
+    "dosageStrengthError",
+    "Dosage strength is required.",
+  );
+  const isQuantityValid = validateNumber(
+    "quantity",
+    "quantityError",
+    "Quantity",
+  );
+  const isPriceValid = validateNumber(
+    "unitPrice",
+    "unitPriceError",
+    "Unit price",
+  );
   const isExpiryValid = validateExpiry();
 
-  if (!isNameValid || !isCategoryValid || !isDosageFormValid || !isStrengthValid || !isQuantityValid || !isPriceValid || !isExpiryValid) {
+  if (
+    !isNameValid ||
+    !isCategoryValid ||
+    !isDosageFormValid ||
+    !isStrengthValid ||
+    !isQuantityValid ||
+    !isPriceValid ||
+    !isExpiryValid
+  ) {
     return;
   }
 
@@ -114,15 +162,27 @@ form.addEventListener("submit", function (e) {
   const formData = new FormData();
   formData.append("token", window.currentUser.token);
   formData.append("name", document.getElementById("medicineName").value.trim());
-  formData.append("genericName", document.getElementById("genericName").value.trim());
+  formData.append(
+    "genericName",
+    document.getElementById("genericName").value.trim(),
+  );
   formData.append("category", document.getElementById("category").value);
   formData.append("dosage", document.getElementById("dosageForm").value);
-  formData.append("dosageStrength", document.getElementById("dosageStrength").value.trim());
+  formData.append(
+    "dosageStrength",
+    document.getElementById("dosageStrength").value.trim(),
+  );
   formData.append("quantity", document.getElementById("quantity").value);
   formData.append("price", document.getElementById("unitPrice").value);
   formData.append("expiryDate", document.getElementById("expiryDate").value);
-  formData.append("manufacturer", document.getElementById("manufacturer").value.trim());
-  formData.append("description", document.getElementById("description").value.trim());
+  formData.append(
+    "manufacturer",
+    document.getElementById("manufacturer").value.trim(),
+  );
+  formData.append(
+    "description",
+    document.getElementById("description").value.trim(),
+  );
 
   fetch("/safedose/controller/medicine/add-medicine.php", {
     method: "POST",
