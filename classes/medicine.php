@@ -21,13 +21,28 @@ class Medicine {
       return ['success' => false, 'message' => 'User account is inactive'];
     }
 
-    $stmt = $this->db->getConnection()->prepare("SELECT m.id, m.name, m.generic_name, m.category, m.dosage, m.dosage_strength, m.quantity, m.price, m.expiry_date, m.manufacturer, m.description, u.name AS posted_by FROM medicine m JOIN users u ON m.user_id = u.id");
-    if (!$stmt) return ['success' => false, 'message' => 'Database error: ' . $conn->error];
+    $userStmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
+    $userStmt->bind_param("i", $userId);
+    $userStmt->execute();
+    $userResult = $userStmt->get_result();
+    $user = $userResult->fetch_assoc();
+
+    $role = $user['role'];
+
+    $query = "SELECT m.id, m.name, m.generic_name, m.category, m.dosage, m.dosage_strength, m.quantity, m.price, m.expiry_date, m.manufacturer, m.description, u.name AS posted_by FROM medicine m JOIN users u ON m.user_id = u.id";
+    if ($role === 'staff') {
+      $query .= " WHERE m.expiry_date >= CURDATE()";
+    }
+
+    $stmt = $conn->prepare($query);
+    if (!$stmt) {
+      return ['success' => false, 'message' => 'Database error: ' . $conn->error];
+    }
     $stmt->execute();
     $result = $stmt->get_result();
     $medicines = [];
     while ($row = $result->fetch_assoc()) {
-        $medicines[] = $row;
+      $medicines[] = $row;
     }
     return ['success' => true, 'message' => 'All medicines', 'data' => $medicines];
   }
@@ -63,6 +78,69 @@ class Medicine {
       return ['success' => true, 'message' => 'Medicine added successfully'];
     } else {
       return ['success' => false, 'message' => 'Database error: ' . $stmt->error];
+    }
+  }
+
+  public function checkLowStock() {
+    $conn = $this->db->getConnection();
+
+    $query = "SELECT id, name, quantity, expiry_date FROM medicine WHERE quantity <= 10";
+
+    $stmt = $conn->prepare($query);
+    if (!$stmt) {
+      return ['success' => false, 'message' => 'Database error: ' . $conn->error];
+    }
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $lowStock = [];
+    while ($row = $result->fetch_assoc()) {
+      $lowStock[] = $row;
+    }
+    return ['success' => true, 'message' => 'Low stock medicines', 'data' => $lowStock];
+  }
+
+  public function deleteMedicine($token, $medicineId) {
+    $conn = $this->db->getConnection();
+
+    $userId = $this->user->validateToken($token);
+    if (!$userId) {
+      return ['success' => false, 'message' => 'Invalid or expired token'];
+    }
+
+    if (!$this->user->isUserActive($userId)) {
+      return ['success' => false, 'message' => 'User account is inactive'];
+    }
+
+    $userStmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
+    $userStmt->bind_param("i", $userId);
+    $userStmt->execute();
+    $userResult = $userStmt->get_result();
+    $user = $userResult->fetch_assoc();
+
+    if ($user['role'] !== 'admin') {
+      return ['success' => false, 'message' => 'Unauthorized: Only admin can delete medicine'];
+    }
+
+    $checkStmt = $conn->prepare("SELECT id FROM medicine WHERE id = ?");
+    $checkStmt->bind_param("i", $medicineId);
+    $checkStmt->execute();
+    $result = $checkStmt->get_result();
+
+    if ($result->num_rows === 0) {
+      return ['success' => false, 'message' => 'Medicine not found'];
+    }
+
+    $deleteStmt = $conn->prepare("DELETE FROM medicine WHERE id = ?");
+    if (!$deleteStmt) {
+      return ['success' => false, 'message' => 'Database error: ' . $conn->error];
+    }
+
+    $deleteStmt->bind_param("i", $medicineId);
+
+    if ($deleteStmt->execute()) {
+      return ['success' => true, 'message' => 'Medicine deleted successfully'];
+    } else {
+      return ['success' => false, 'message' => 'Failed to delete medicine'];
     }
   }
 }
