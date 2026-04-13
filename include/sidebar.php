@@ -7,7 +7,7 @@
 
   <ul class="nav-items">
     <li>
-      <a href="/safedose/dashboard/admin/index.php">
+      <a href="/safedose/dashboard/index.php">
         <i class="fa-solid fa-house"></i>
         <span>Dashboard</span>
       </a>

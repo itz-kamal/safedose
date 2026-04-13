@@ -33,6 +33,10 @@
                 <input type="password" class="form-control" id="password" autocomplete="password" />
                 <div class="invalid-feedback" id="passwordError"></div>
               </div>
+<!-- 
+              <div class="text-end mb-3">
+                <a href="/safedose/auth/forgot-password.php" class="text-decoration-none small">Forgot Password?</a>
+              </div> -->
 
               <button type="submit" class="btn btn-primary-custom w-100 py-2 fw-semibold text-white">
                 Login

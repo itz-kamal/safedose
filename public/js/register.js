@@ -47,19 +47,9 @@ form.addEventListener("submit", function (e) {
   var isEmailValid = validateEmail(email, "emailError");
   var isPhoneNumberValid = validatePhoneNumber(phoneNumber, "phoneError");
   var isPasswordValid = validatePassword(password, "passwordError");
-  var isMatch = validatePasswordMatch(
-    password,
-    confirmPassword,
-    "confirmPasswordError",
-  );
+  var isMatch = validatePasswordMatch(password, confirmPassword, "confirmPasswordError");
 
-  if (
-    !isNameValid ||
-    !isEmailValid ||
-    !isPhoneNumberValid ||
-    !isPasswordValid ||
-    !isMatch
-  ) {
+  if (!isNameValid || !isEmailValid || !isPhoneNumberValid || !isPasswordValid || !isMatch) {
     return;
   }
 

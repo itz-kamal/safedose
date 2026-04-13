@@ -88,7 +88,10 @@ tableBody.addEventListener("click", (e) => {
         if (handleUnauthorized(data)) return;
         if (data.success) {
           loadStaff();
-          showAlert(newRole === "admin" ? "User promoted to Admin." : "User demoted to Staff.", "success");
+          showAlert(
+            newRole === "admin" ? "User promoted to Admin." : "User demoted to Staff.",
+            "success",
+          );
         } else {
           showAlert(data.message, "danger");
           roleBtn.disabled = false;
