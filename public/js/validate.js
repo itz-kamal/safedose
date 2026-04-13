@@ -78,6 +78,64 @@ function validatePasswordMatch(passwordInput, confirmPasswordInput, errorId) {
   return true;
 }
 
+function validateTextField(fieldId, errorId, message) {
+  const el = document.getElementById(fieldId);
+  if (!el.value.trim()) {
+    el.classList.add("is-invalid");
+    document.getElementById(errorId).textContent = message;
+    return false;
+  }
+  el.classList.remove("is-invalid");
+  document.getElementById(errorId).textContent = "";
+  return true;
+}
+
+function validateSelect(fieldId, errorId, message) {
+  const el = document.getElementById(fieldId);
+  if (!el.value) {
+    el.classList.add("is-invalid");
+    document.getElementById(errorId).textContent = message;
+    return false;
+  }
+  el.classList.remove("is-invalid");
+  document.getElementById(errorId).textContent = "";
+  return true;
+}
+
+function validateNumber(fieldId, errorId, label) {
+  const el = document.getElementById(fieldId);
+  if (el.value === "") {
+    el.classList.add("is-invalid");
+    document.getElementById(errorId).textContent = label + " is required.";
+    return false;
+  }
+  if (Number(el.value) < 0) {
+    el.classList.add("is-invalid");
+    document.getElementById(errorId).textContent = label + " cannot be negative.";
+    return false;
+  }
+  el.classList.remove("is-invalid");
+  document.getElementById(errorId).textContent = "";
+  return true;
+}
+
+function validateExpiry(fieldId, errorId) {
+  const el = document.getElementById(fieldId);
+  if (!el.value) {
+    el.classList.add("is-invalid");
+    document.getElementById(errorId).textContent = "Expiry date is required.";
+    return false;
+  }
+  if (new Date(el.value) <= new Date()) {
+    el.classList.add("is-invalid");
+    document.getElementById(errorId).textContent = "Expiry date must be in the future.";
+    return false;
+  }
+  el.classList.remove("is-invalid");
+  document.getElementById(errorId).textContent = "";
+  return true;
+}
+
 function setError(input, errorId, message) {
   let errorDiv = document.getElementById(errorId);
   if (message) {

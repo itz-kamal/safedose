@@ -6,6 +6,18 @@ if (!userData) {
   window.currentUser = userData;
 }
 
+function handleAuthError(data) {
+  if (
+    !data.success &&
+    (data.message === "Invalid or expired token" || data.message === "User account is inactive")
+  ) {
+    localStorage.removeItem("safedoseUser");
+    window.location.href = "/safedose/auth/login.php";
+    return true;
+  }
+  return false;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const greeting = document.getElementById("greeting");
   if (greeting) {
