@@ -80,7 +80,7 @@ class Medicine {
         return ['success' => false, 'message' => 'Medicine not found'];
     }
     $stmt = $conn->prepare("UPDATE medicine SET name = ?, generic_name = ?, category = ?, dosage = ?, dosage_strength = ?, quantity = ?, price = ?, expiry_date = ?, manufacturer = ?, description = ? WHERE id = ?");
-    $stmt->bind_param("sssssidsissi", $name, $generic_name, $category, $dosage, $dosage_strength, $quantity, $price, $expiry_date, $manufacturer, $description, $medId);
+    $stmt->bind_param("sssssidsssi", $name, $generic_name, $category, $dosage, $dosage_strength, $quantity, $price, $expiry_date, $manufacturer, $description, $medId);
     if ($stmt->execute()) {
       return ['success' => true, 'message' => 'Medicine updated successfully'];
     } else {
@@ -167,7 +167,7 @@ class Medicine {
   public function checkLowStock() {
     $conn = $this->db->getConnection();
 
-    $query = "SELECT id, name, quantity, expiry_date FROM medicine WHERE quantity <= 10";
+    $query = "SELECT id, name, quantity, expiry_date FROM medicine WHERE quantity <= 5";
 
     $stmt = $conn->prepare($query);
     if (!$stmt) {

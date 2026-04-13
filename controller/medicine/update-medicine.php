@@ -9,17 +9,17 @@ $medicine = new Medicine();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'] ?? '';
-    $genericName = $_POST['genericName'] ?? '';
+    $generic_name = $_POST['genericName'] ?? '';
     $category = $_POST['category'] ?? '';
     $dosage = $_POST['dosage'] ?? '';
-    $dosageStrength = $_POST['dosageStrength'] ?? '';
+    $dosage_strength = $_POST['dosageStrength'] ?? '';
     $quantity = $_POST['quantity'] ?? '';
     $price = $_POST['price'] ?? '';
-    $expire = $_POST['expiryDate'] ?? '';
+    $expiry_date = $_POST['expiryDate'] ?? '';
     $manufacturer = $_POST['manufacturer'] ?? '';
     $description = $_POST['description'] ?? '';
     $token = $_POST['token'] ?? '';
-    $medId = intval($_POST['id']) ?? 0;
+    $medId = intval($_POST['id'] ?? 0);
 
     $result = $medicine->updateMedicine($token, $medId, $name, $generic_name, $category, $dosage, $dosage_strength, $quantity, $price, $expiry_date, $manufacturer, $description);
 
